@@ -80,7 +80,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Online"
-                        android:textColor="#00CC44"
+                        android:textColor="#39D98A"
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="bold"
                         android:paddingHorizontal="6dp"
@@ -99,7 +99,7 @@
                         android:layout_width="@dimen/_13sdp"
                         android:layout_height="@dimen/_13sdp"
                         android:src="@drawable/ic_folder"
-                        android:tint="#AAAAAA"
+                        android:tint="#B8ACC8"
                         android:layout_marginEnd="4dp"
                         android:contentDescription="Profile folder" />
 
@@ -107,7 +107,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Profile: "
-                        android:textColor="#AAAAAA"
+                        android:textColor="#B8ACC8"
                         android:textSize="@dimen/_11ssp" />
 
                     <TextView
@@ -127,7 +127,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="⚙  Profile Setting"
-                    android:textColor="#39FF14"
+                    android:textColor="#F2C94C"
                     android:textSize="@dimen/_10ssp"
                     android:textStyle="bold"
                     android:layout_marginTop="6dp"
@@ -153,7 +153,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_26sdp"
                 android:text="1.21.4"
-                android:textColor="#CCCCCC"
+                android:textColor="#E8E0F0"
                 android:textSize="@dimen/_11ssp"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/_8sdp"
@@ -165,7 +165,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_26sdp"
                 android:text="Fabric"
-                android:textColor="#CCCCCC"
+                android:textColor="#E8E0F0"
                 android:textSize="@dimen/_11ssp"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/_8sdp"
@@ -177,7 +177,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_26sdp"
                 android:text="Java 21+"
-                android:textColor="#CCCCCC"
+                android:textColor="#E8E0F0"
                 android:textSize="@dimen/_11ssp"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/_8sdp"
@@ -189,7 +189,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_26sdp"
                 android:text="3.5GB"
-                android:textColor="#CCCCCC"
+                android:textColor="#E8E0F0"
                 android:textSize="@dimen/_11ssp"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/_8sdp"
@@ -214,7 +214,7 @@
                 android:layout_width="@dimen/_18sdp"
                 android:layout_height="@dimen/_18sdp"
                 android:src="@drawable/ic_folder"
-                android:tint="#39FF14"
+                android:tint="#F2C94C"
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:contentDescription="Select profile" />
 
@@ -231,7 +231,7 @@
                 android:layout_width="@dimen/_16sdp"
                 android:layout_height="@dimen/_16sdp"
                 android:src="@drawable/spinner_arrow_right"
-                android:tint="#888888"
+                android:tint="#A99BB9"
                 android:contentDescription="Arrow" />
 
         </LinearLayout>
@@ -244,7 +244,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#2A2A2A"
+            android:background="#46345C"
             android:layout_marginBottom="@dimen/_14sdp" />
 
         <!-- PLAY Button -->
@@ -253,7 +253,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_52sdp"
             android:text="▶  PLAY"
-            android:textColor="#000000"
+            android:textColor="#09090D"
             android:textSize="@dimen/_16ssp"
             android:textStyle="bold"
             android:letterSpacing="0.08"
@@ -286,7 +286,7 @@
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:src="@drawable/ic_menu_settings"
-                android:tint="#39FF14"
+                android:tint="#F2C94C"
                 android:layout_marginEnd="@dimen/_8sdp"
                 android:contentDescription="Servers icon" />
 
@@ -310,7 +310,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Click to quick join"
-                    android:textColor="#888888"
+                    android:textColor="#A99BB9"
                     android:textSize="@dimen/_10ssp" />
 
             </LinearLayout>
@@ -320,7 +320,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="View All Servers"
-                android:textColor="#888888"
+                android:textColor="#A99BB9"
                 android:textSize="@dimen/_10ssp"
                 android:clickable="true"
                 android:focusable="true"
@@ -389,7 +389,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="bananasmp.net"
-                    android:textColor="#888888"
+                    android:textColor="#A99BB9"
                     android:textSize="@dimen/_10ssp" />
 
             </LinearLayout>
@@ -406,7 +406,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="906/2500"
-                android:textColor="#AAAAAA"
+                android:textColor="#B8ACC8"
                 android:textSize="@dimen/_10ssp" />
 
         </LinearLayout>
@@ -472,7 +472,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="fast.ascendiamc.com"
-                    android:textColor="#888888"
+                    android:textColor="#A99BB9"
                     android:textSize="@dimen/_10ssp" />
 
             </LinearLayout>
@@ -489,7 +489,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="14/300"
-                android:textColor="#AAAAAA"
+                android:textColor="#B8ACC8"
                 android:textSize="@dimen/_10ssp" />
 
         </LinearLayout>
@@ -555,7 +555,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="play.happymc.fun"
-                    android:textColor="#888888"
+                    android:textColor="#A99BB9"
                     android:textSize="@dimen/_10ssp" />
 
             </LinearLayout>
@@ -572,7 +572,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="81/999"
-                android:textColor="#AAAAAA"
+                android:textColor="#B8ACC8"
                 android:textSize="@dimen/_10ssp" />
 
         </LinearLayout>
@@ -638,7 +638,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="insanesmp.net"
-                    android:textColor="#888888"
+                    android:textColor="#A99BB9"
                     android:textSize="@dimen/_10ssp" />
 
             </LinearLayout>
@@ -655,7 +655,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="237/690"
-                android:textColor="#AAAAAA"
+                android:textColor="#B8ACC8"
                 android:textSize="@dimen/_10ssp" />
 
         </LinearLayout>
@@ -720,7 +720,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="fast.eternalnetwork.club"
-                    android:textColor="#888888"
+                    android:textColor="#A99BB9"
                     android:textSize="@dimen/_10ssp" />
 
             </LinearLayout>
@@ -737,7 +737,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2/2026"
-                android:textColor="#AAAAAA"
+                android:textColor="#B8ACC8"
                 android:textSize="@dimen/_10ssp" />
 
         </LinearLayout>

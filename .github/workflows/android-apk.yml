@@ -1,0 +1,40 @@
+name: PaksLauncher Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build PaksLauncher APK
+        run: |
+          chmod +x gradlew
+          ./gradlew :app_pojavlauncher:assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: PaksLauncher-APK
+          path: app_pojavlauncher/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 14
