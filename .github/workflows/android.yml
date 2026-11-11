@@ -1,0 +1,166 @@
+name: CS Launcher V2 CI
+
+on:
+  pull_request:
+    branches-ignore:
+      - 'l10n_v3_openjdk'
+    types: [opened, reopened]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    env:
+      CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+
+    steps:
+      # ── Checkout ────────────────────────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      # ── Java ────────────────────────────────────────────────────────────────
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      # ── JRE 8 Runtime ───────────────────────────────────────────────────────
+      - name: Download JRE 8
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: build.yml
+          path: app_pojavlauncher/src/main/assets/components/jre
+          workflow_conclusion: success
+          repo: AngelAuraMC/angelauramc-openjdk-build
+          branch: buildjre8
+          name: jre8-pojav
+
+      # ── Gradle ──────────────────────────────────────────────────────────────
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          validate-wrappers: false
+          gradle-version: "8.11"
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
+
+      # ── Signing keystore ─────────────────────────────────────────────────────
+      - name: Decode signing keystore
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > keystore.jks
+          echo "KEYSTORE_PATH=${{ github.workspace }}/keystore.jks" >> $GITHUB_ENV
+          echo "KEY_ALIAS=${{ secrets.SIGNING_KEY_ALIAS }}"         >> $GITHUB_ENV
+          echo "KEY_PASSWORD=${{ secrets.SIGNING_KEY_PASSWORD }}"   >> $GITHUB_ENV
+          echo "STORE_PASSWORD=${{ secrets.SIGNING_STORE_PASSWORD }}" >> $GITHUB_ENV
+
+      # ── Language list ────────────────────────────────────────────────────────
+      - name: Update language list
+        run: |
+          chmod +x ./scripts/languagelist_updater.sh
+          ./scripts/languagelist_updater.sh
+          mkdir -p out
+
+      # ── Release APK (PRIMARY — signed, shrunk) ───────────────────────────────
+      - name: Build Release APK
+        run: |
+          SIGNING_ARGS=""
+          if [ -s "$KEYSTORE_PATH" ]; then
+            SIGNING_ARGS="-PsigningKeystore=$KEYSTORE_PATH \
+                          -PsigningKeyAlias=$KEY_ALIAS \
+                          -PsigningKeyPassword=$KEY_PASSWORD \
+                          -PsigningStorePassword=$STORE_PASSWORD"
+          fi
+          ./gradlew :app_pojavlauncher:assembleDebug $SIGNING_ARGS \
+            -Pandroid.enableR8.fullMode=true \
+            --no-daemon \
+            --stacktrace
+
+          RELEASE_APK=$(find app_pojavlauncher/build/outputs/apk/debug -name "*.apk" | head -n 1)
+          if [ -n "$RELEASE_APK" ]; then
+            cp "$RELEASE_APK" out/PaksLauncher.apk
+            md5sum  out/PaksLauncher.apk > out/PaksLauncher.md5
+            sha256sum out/PaksLauncher.apk > out/PaksLauncher.sha256
+          else
+            echo "ERROR: Release APK not found" && exit 1
+          fi
+
+      # ── Debug APK (internal / QA only) ───────────────────────────────────────
+      - name: Build Debug APK
+        run: |
+          ./gradlew :app_pojavlauncher:assembleDebug \
+            --no-daemon
+
+          DEBUG_APK=$(find app_pojavlauncher/build/outputs/apk/debug -name "*.apk" | head -n 1)
+          if [ -n "$DEBUG_APK" ]; then
+            cp "$DEBUG_APK" out/PaksLauncher-DEBUG.apk
+            md5sum out/PaksLauncher-DEBUG.apk > out/PaksLauncher-DEBUG.md5
+          fi
+
+      # ── No-runtime APK ───────────────────────────────────────────────────────
+      - name: Build APK without runtime
+        run: |
+          rm -rf app_pojavlauncher/src/main/assets/components/jre
+          rm -rf app_pojavlauncher/src/main/assets/components/jre-new
+          rm -rf app_pojavlauncher/src/main/assets/components/jre-21
+          rm -rf app_pojavlauncher/src/main/assets/components/jre-25
+
+          ./gradlew :app_pojavlauncher:assembleDebug \
+            -Pandroid.enableR8.fullMode=true \
+            --no-daemon
+
+          NORUNTIME_APK=$(find app_pojavlauncher/build/outputs/apk/debug -name "*.apk" | head -n 1)
+          if [ -n "$NORUNTIME_APK" ]; then
+            cp "$NORUNTIME_APK" out/PaksLauncher-NO-RUNTIME.apk
+            md5sum    out/PaksLauncher-NO-RUNTIME.apk > out/PaksLauncher-NO-RUNTIME.md5
+            sha256sum out/PaksLauncher-NO-RUNTIME.apk > out/PaksLauncher-NO-RUNTIME.sha256
+          fi
+
+      # ── APK size report ──────────────────────────────────────────────────────
+      - name: APK size report
+        run: |
+          echo "## APK Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+          for f in out/*.apk; do
+            SIZE=$(du -sh "$f" | cut -f1)
+            echo "| $(basename $f) | $SIZE |" >> $GITHUB_STEP_SUMMARY
+          done
+
+      # ── Upload all artifacts ─────────────────────────────────────────────────
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cs-launcher-v2-build-${{ github.run_number }}
+          path: out/*
+          retention-days: 30
+
+      # ── GitHub Release (manual only) ─────────────────────────────────────────
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          artifacts: "out/PaksLauncher.apk,out/PaksLauncher.md5,out/PaksLauncher.sha256,out/PaksLauncher-NO-RUNTIME.apk,out/PaksLauncher-NO-RUNTIME.md5,out/PaksLauncher-NO-RUNTIME.sha256"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: "v2.${{ github.run_number }}"
+          name: "CS Launcher V2 — Build ${{ github.run_number }}"
+          body: |
+            ## CS Launcher V2 — Build ${{ github.run_number }}
+
+            **Branch:** `${{ github.ref_name }}`
+            **Commit:** `${{ github.sha }}`
+
+            ### Downloads
+            | File | Description |
+            |------|-------------|
+            | `PaksLauncher.apk` | ✅ **Recommended** — Signed release build with bundled JRE 8 |
+            | `PaksLauncher-NO-RUNTIME.apk` | Signed release build without bundled runtime (smaller, requires device JRE) |
+
+            > ℹ️ Verify your download with the `.md5` / `.sha256` checksum files.
+          allowUpdates: true
+          omitBodyDuringUpdate: false
+          replacesArtifacts: true
